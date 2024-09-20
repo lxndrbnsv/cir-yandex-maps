@@ -39,12 +39,19 @@ class GetCompanies:
             company_area = browser.find_element(
                 By.CLASS_NAME, "card-businesses-list__list"
             )
+            # company_area = browser.find_element(
+            #     By.CLASS_NAME, "search-list-view"
+            # )
             # links = company_area.find_elements_by_class_name(
             #     "search-snippet-view__link-overlay"
             # )
+            # links = company_area.find_elements(
+            #     By.CLASS_NAME, "search-snippet-view__link-overlay"
+            # )
             links = company_area.find_elements(
-                By.CLASS_NAME, "search-snippet-view__link-overlay"
+                By.CLASS_NAME, "link-overlay"
             )
+            print(links)
             companies = []
             while True:
                 previous_len = len(companies)
@@ -56,7 +63,7 @@ class GetCompanies:
                 #     "search-snippet-view__link-overlay"
                 # )
                 links = company_area.find_elements(
-                    By.CLASS_NAME, "search-snippet-view__link-overlay"
+                    By.CLASS_NAME, "link-overlay"
                 )
                 for link in links:
                     link_href = link.get_attribute("href")
@@ -69,7 +76,8 @@ class GetCompanies:
 
             self.results = companies
 
-        except NoSuchElementException:
+        except NoSuchElementException as e:
+            print(e)
             print("Организации в здании отсутствуют!")
             self.results = []
 

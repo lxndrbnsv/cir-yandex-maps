@@ -1,3 +1,4 @@
+import sys
 import warnings
 
 import PySimpleGUI as Sg
@@ -13,9 +14,11 @@ from modules.proxy import GetProxy, AddProxy
 from selenium.webdriver.chrome.service import Service
 
 
-
 warnings.filterwarnings("ignore", category=UserWarning)
 
+
+sys.stdout = open("log.log", "w+")
+sys.stderr = open("log.log", "w+")
 
 service = Service()
 options = webdriver.ChromeOptions()
@@ -38,7 +41,7 @@ layout = [
         Sg.FileBrowse("Обзор"),
     ],
     [Sg.HSeparator()],
-    [Sg.Output(size=(75, 10), echo_stdout_stderr=False)],
+    # [Sg.Output(size=(75, 10), echo_stdout_stderr=False)],
     [
         Sg.Text("Добавить прокси (ip:port):"),
         Sg.InputText(do_not_clear=False),
@@ -97,17 +100,21 @@ if __name__ == "__main__":
                     companies = GetCompanies(browser=browser, query=q).results
                     print(f"Собрано {len(companies)} организаций.")
                     print("Обработка данных:")
-
+                    phones = []
                     for company in companies:
                         company_dict = GetCompanyData(
                             browser=browser, company_link=company
                         ).data
                         if company_dict is not None:
                             company_dict["address"] = q
-                            WriteXLSX(company_dict=company_dict)
-                            print("Данные записаны")
+                            # WriteXLSX(company_dict=company_dict)
+                            # print("Данные записаны")
+                            phones.append(company_dict["phone"])
                         else:
                             print("Отсутствуют контактные данные!")
+                    WriteXLSX(
+                        company_dict=dict(address=q, phone=", ".join(phones))
+                    )
                     print("--- --- ---")
                 Sg.popup("Сбор данных завершён!")
             else:
