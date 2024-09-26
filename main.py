@@ -9,7 +9,7 @@ from selenium.webdriver.common.proxy import Proxy, ProxyType
 from modules.queries import ReadQueries
 from modules.parse import GetCompanies, GetCompanyData
 from modules.write import WriteXLSX
-from modules.util import ClearWB
+from modules.util import ClearWB, parse_query_string
 from modules.proxy import GetProxy, AddProxy
 from selenium.webdriver.chrome.service import Service
 
@@ -17,8 +17,8 @@ from selenium.webdriver.chrome.service import Service
 warnings.filterwarnings("ignore", category=UserWarning)
 
 
-sys.stdout = open("log.log", "w+")
-sys.stderr = open("log.log", "w+")
+# sys.stdout = open("log.log", "w+")
+# sys.stderr = open("log.log", "w+")
 
 service = Service()
 options = webdriver.ChromeOptions()
@@ -113,7 +113,11 @@ if __name__ == "__main__":
                         else:
                             print("Отсутствуют контактные данные!")
                     WriteXLSX(
-                        company_dict=dict(address=q, phone=", ".join(phones))
+                        company_dict=dict(
+                            address=q,
+                            phone=", ".join(phones),
+                            building_id=parse_query_string(q),
+                        )
                     )
                     print("--- --- ---")
                 Sg.popup("Сбор данных завершён!")
