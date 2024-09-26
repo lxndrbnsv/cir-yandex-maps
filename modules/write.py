@@ -12,7 +12,7 @@ class WriteXLSX:
         ws[f"E{line_to_write}"] = (
             f'{company_dict["name"]},' f' {company_dict["type"]}'
         )
-        ws[f"E{line_to_write}"] = f'{company_dict["address"]},'
+        # ws[f"E{line_to_write}"] = f'{company_dict["address"]},'
         ws[f"H{line_to_write}"] = company_dict["address"]
         ws[f"S{line_to_write}"] = company_dict["phone"]
         ws[f"Y{line_to_write}"] = company_dict["website"]
