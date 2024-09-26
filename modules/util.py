@@ -1,3 +1,4 @@
+import re
 import os
 import shutil
 from openpyxl import load_workbook
@@ -33,3 +34,18 @@ class NormalizePhoneNumber:
             normalized = stripped_symbols
 
         self.normalize = normalized
+
+
+def parse_query_string(query: str) -> str:
+    address_items = query.split(",")
+
+    address_data = [address_items[0]]
+
+    for a in address_items[1:]:
+        digits = re.findall(r"\d+", a)
+        try:
+            address_data.append(digits[0])
+        except IndexError:
+            pass
+
+    return f"#{'-'.join(address_data)}"

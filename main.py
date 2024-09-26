@@ -1,4 +1,5 @@
 import sys
+import json
 import warnings
 
 import PySimpleGUI as Sg
@@ -9,7 +10,7 @@ from selenium.webdriver.common.proxy import Proxy, ProxyType
 from modules.queries import ReadQueries
 from modules.parse import GetCompanies, GetCompanyData
 from modules.write import WriteXLSX
-from modules.util import ClearWB
+from modules.util import ClearWB, parse_query_string
 from modules.proxy import GetProxy, AddProxy
 from selenium.webdriver.chrome.service import Service
 
@@ -17,8 +18,8 @@ from selenium.webdriver.chrome.service import Service
 warnings.filterwarnings("ignore", category=UserWarning)
 
 
-sys.stdout = open("log.log", "w+")
-sys.stderr = open("log.log", "w+")
+# sys.stdout = open("log.log", "w+")
+# sys.stderr = open("log.log", "w+")
 
 service = Service()
 options = webdriver.ChromeOptions()
@@ -98,6 +99,7 @@ if __name__ == "__main__":
                 for q in queries:
                     print(q)
                     companies = GetCompanies(browser=browser, query=q).results
+
                     print(f"Собрано {len(companies)} организаций.")
                     print("Обработка данных:")
                     phones = []
@@ -105,16 +107,15 @@ if __name__ == "__main__":
                         company_dict = GetCompanyData(
                             browser=browser, company_link=company
                         ).data
+
                         if company_dict is not None:
                             company_dict["address"] = q
-                            # WriteXLSX(company_dict=company_dict)
-                            # print("Данные записаны")
+                            company_dict["building_id"] = parse_query_string(q)
+                            WriteXLSX(company_dict=company_dict)
+                            print("Данные записаны")
                             phones.append(company_dict["phone"])
                         else:
                             print("Отсутствуют контактные данные!")
-                    WriteXLSX(
-                        company_dict=dict(address=q, phone=", ".join(phones))
-                    )
                     print("--- --- ---")
                 Sg.popup("Сбор данных завершён!")
             else:
