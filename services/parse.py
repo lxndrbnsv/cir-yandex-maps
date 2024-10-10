@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 
-from modules.util import NormalizePhoneNumber
+from services.util import NormalizePhoneNumber
 
 
 class GetCompanies:

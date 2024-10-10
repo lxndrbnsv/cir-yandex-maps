@@ -6,11 +6,11 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 
-from modules.queries import ReadQueries
-from modules.parse import GetCompanies, GetCompanyData
-from modules.write import WriteXLSX
-from modules.util import ClearWB, parse_query_string
-from modules.proxy import GetProxy, AddProxy
+from services.queries import ReadQueries
+from services.parse import GetCompanies, GetCompanyData
+from services.write import WriteXLSX
+from services.util import ClearWB, parse_query_string
+from services.proxy import GetProxy, AddProxy
 from selenium.webdriver.chrome.service import Service
 
 
