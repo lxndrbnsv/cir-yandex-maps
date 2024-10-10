@@ -5,6 +5,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 
 from services.util import NormalizePhoneNumber
+from services.db import Duplicates
 
 
 class GetCompanies:
@@ -48,9 +49,7 @@ class GetCompanies:
             # links = company_area.find_elements(
             #     By.CLASS_NAME, "search-snippet-view__link-overlay"
             # )
-            links = company_area.find_elements(
-                By.CLASS_NAME, "link-overlay"
-            )
+            links = company_area.find_elements(By.CLASS_NAME, "link-overlay")
             print(links)
             companies = []
             while True:
@@ -161,13 +160,20 @@ class GetCompanyData:
             print(name)
 
             if phone is not None:
-                self.data = dict(
-                    link=company_link,
-                    name=name,
-                    type=company_type,
-                    phone=phone,
-                    website=website,
-                )
+                duplicate_check = Duplicates()
+                exists = duplicate_check.company_exists(phone)
+                if not exists:
+                    actual = True
+                else:
+                    actual = duplicate_check.company_exists(phone)
+                if actual:
+                    self.data = dict(
+                        link=company_link,
+                        name=name,
+                        type=company_type,
+                        phone=phone,
+                        website=website,
+                    )
             else:
                 self.data = None
         except Exception:
